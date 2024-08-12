@@ -13,7 +13,7 @@ namespace Player
             MouseX,
             MouseY
         }
-        //Create a like or reference to rotational axis call axis and set the defualt axis X
+        //Create a link or reference to rotational axis call axis and set the defualt axis X
         [SerializeField] RotationalAxis axis = RotationalAxis.MouseX;
         //Sensitivity of moving the mouse around the screen (how fast the camera rotates)
         public float sensitivity = 15;
