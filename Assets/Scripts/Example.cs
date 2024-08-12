@@ -5,7 +5,6 @@ using UnityEngine;
 public class Example : MonoBehaviour
 {
 
-    public static GAMESTATE gameState = GAMESTATE.Game;
     void Awake()
      {
          Debug.Log("Awake");
