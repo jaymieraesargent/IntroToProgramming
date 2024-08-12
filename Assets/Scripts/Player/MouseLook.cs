@@ -6,36 +6,79 @@ namespace Player
 {
     public class MouseLook : MonoBehaviour
     {
-        public enum MEH
+        //Create a public enum call RotationalAxis
+        public enum RotationalAxis
         {
-            Horizontal,
-            Vertical
+            //MouseX, MouseY
+            MouseX,
+            MouseY
         }
-        public MEH meh;
-        private void Start()
+        //Create a link or reference to rotational axis call axis and set the defualt axis X
+        [SerializeField] RotationalAxis axis = RotationalAxis.MouseX;
+        //Sensitivity of moving the mouse around the screen (how fast the camera rotates)
+        public float sensitivity = 15;
+        //Minimum and Maximum values the head can look up and down
+        [SerializeField] Vector2 rotationClamp = new Vector2(-60, 60);
+        //Temp value to help us calculate the up and down rotation
+        float yRotation;
+        //Value to control the invert swap for up and down camera control
+        public bool invert = false;
+        void Start()
         {
-            if (meh == MEH.Horizontal)
+            #region Should have this in GameManager
+            //Lock the cursor to the middle of the screen
+            Cursor.lockState = CursorLockMode.Locked;
+            //Hide the Cursor from view
+            Cursor.visible = false;
+            #endregion
+            //If our gameobject has a rigidbody attached to it
+            if (GetComponent<Rigidbody>())
             {
-                meh = MEH.Vertical;
+                //Then freeze the rigidbody constraints
+                GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+            }
+            //If the game object is a camera 
+            if (GetComponent<Camera>())
+            {
+                //Set our axis to Y
+                axis = RotationalAxis.MouseY;
             }
         }
-        private void Update()
+        void Update()
         {
-            if (meh == MEH.Vertical)
+            #region Mouse Movement X axis
+            //If the rotational axis is mouse x
+            if (axis == RotationalAxis.MouseX)
             {
-                //run Vertical behaviour
+                //Transform the rotation on our gameobjects Y by our mouse X times sensitivity
+                transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivity, 0);
             }
+            #endregion
+            #region Mouse Movement Y axis
+            //Else we are on the rotation axis of mouse Y
             else
             {
-                //run Horizontal behaviour 
+                //Our rotational Y plus equals our mouse input for mouse Y times sensitivity
+                yRotation += Input.GetAxis("Mouse Y") * sensitivity;
+                //Clamp the rotation y axis using Mathf and between our min and max
+                yRotation = Mathf.Clamp(yRotation, rotationClamp.x, rotationClamp.y);
+                //If inverted mouse look (down is up)
+                if (invert)
+                {
+                    //transform our local rotation angles to the new rotation
+                    transform.localEulerAngles = new Vector3(yRotation, 0, 0);
+                }
+                //else if (up is up)
+                else
+                {
+                    //transform our local rotation angles to the new - rotation
+                    transform.localEulerAngles = new Vector3(-yRotation, 0, 0);
+                }
             }
+            #endregion
+
         }
     }
+}
 
-}
-public enum GAMESTATE
-{
-    PreGame,
-    Game,
-    PostGame
-}
+
