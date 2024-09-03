@@ -25,12 +25,7 @@ namespace Player
         public bool invert = false;
         void Start()
         {
-            #region Should have this in GameManager
-            //Lock the cursor to the middle of the screen
-            Cursor.lockState = CursorLockMode.Locked;
-            //Hide the Cursor from view
-            Cursor.visible = false;
-            #endregion
+          
             //If our gameobject has a rigidbody attached to it
             if (GetComponent<Rigidbody>())
             {
@@ -44,7 +39,7 @@ namespace Player
                 axis = RotationalAxis.MouseY;
             }
         }
-        void Update()
+        void Look()
         {
             #region Mouse Movement X axis
             //If the rotational axis is mouse x
@@ -78,7 +73,12 @@ namespace Player
             #endregion
 
         }
+        private void Update()
+        {
+            if (GameManager.instance.currentGameState == GameState.Game)
+            {
+                Look();
+            }
+        }
     }
 }
-
-

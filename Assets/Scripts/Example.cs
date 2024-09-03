@@ -37,4 +37,8 @@ public class Example : MonoBehaviour
     {
         Debug.Log("OnDestroy");
     }
+    public void DoAThing()
+    {
+
+    }
 }

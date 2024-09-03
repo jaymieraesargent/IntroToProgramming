@@ -104,37 +104,41 @@ namespace Player
             // This line ensures the script is enabled and will run its Update method.
             this.enabled = true;
         }
-        private void Update()
-        {
-
-            // This checks if the _characterController is not null (i.e., it exists).
-            if (_characterController != null)
-            {
-                // This checks if the character is on the ground.
-                if (_characterController.isGrounded)
+        private void MovePlayer()
+        {            
+                // This checks if the _characterController is not null (i.e., it exists).
+                if (_characterController != null)
                 {
-                    //Runs the Behavouir Container that allows us to change speed based on user input
-                    SpeedControl();
-                    // This sets _moveDirection based on player input from the Horizontal and Vertical axes.
-                    _moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-                    //move in the direction we are facing
-                    _moveDirection = transform.TransformDirection(_moveDirection);
-                    // This multiplies the direction by the current movement speed.
-                    _moveDirection *= _moveSpeed;
-                    // This checks if the player has pressed the Jump button.
-                    if (Input.GetButton("Jump"))
+                    // This checks if the character is on the ground.
+                    if (_characterController.isGrounded)
                     {
-                        // This sets the y component of _moveDirection to the jump force, making the character jump.
-                        _moveDirection.y = _jump;
+                        //Runs the Behavouir Container that allows us to change speed based on user input
+                        SpeedControl();
+                        // This sets _moveDirection based on player input from the Horizontal and Vertical axes.
+                        _moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                        //move in the direction we are facing
+                        _moveDirection = transform.TransformDirection(_moveDirection);
+                        // This multiplies the direction by the current movement speed.
+                        _moveDirection *= _moveSpeed;
+                        // This checks if the player has pressed the Jump button.
+                        if (Input.GetButton("Jump"))
+                        {
+                            // This sets the y component of _moveDirection to the jump force, making the character jump.
+                            _moveDirection.y = _jump;
+                        }
                     }
-                }
-                // This applies gravity to the y component of _moveDirection over time.
-                _moveDirection.y -= _gravity * Time.deltaTime;
-                // This moves the character based on _moveDirection, multiplied by Time.deltaTime for smooth movement.
-                _characterController.Move(_moveDirection * Time.deltaTime);
+                    // This applies gravity to the y component of _moveDirection over time.
+                    _moveDirection.y -= _gravity * Time.deltaTime;
+                    // This moves the character based on _moveDirection, multiplied by Time.deltaTime for smooth movement.
+                    _characterController.Move(_moveDirection * Time.deltaTime);
+                }    
+        }
+        private void Update()
+        {  if (GameManager.instance.currentGameState == GameState.Game)
+          
+            {
+                MovePlayer();
             }
-
-
         }
         #endregion
         void SpeedControl()
