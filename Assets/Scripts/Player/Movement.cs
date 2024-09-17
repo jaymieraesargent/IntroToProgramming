@@ -51,8 +51,11 @@ namespace Player
         and other built-in methods for game behavior.
      */
     #endregion
+
+    
     public class Movement : MonoBehaviour
     {
+        
         #region Attributes for the inspector
         /*
             C# Attributes in Unity! - Intermediate Scripting Tutorial
@@ -104,7 +107,10 @@ namespace Player
             // This line ensures the script is enabled and will run its Update method.
             this.enabled = true;
         }
-        private void MovePlayer()
+       /// <summary>
+       /// Allows the Player to move using WASD or Arrow Keys if the player is grounded.
+       /// </summary>
+        public void MovePlayer()
         {            
                 // This checks if the _characterController is not null (i.e., it exists).
                 if (_characterController != null)

@@ -24,8 +24,8 @@ namespace Player
         //Value to control the invert swap for up and down camera control
         public bool invert = false;
         void Start()
-        {
-          
+        {            
+
             //If our gameobject has a rigidbody attached to it
             if (GetComponent<Rigidbody>())
             {
