@@ -5,7 +5,7 @@ using UnityEngine;
 public class TorchHandler : MonoBehaviour
 {
     public GameObject torch;
-    public Light light;
+    public Light tLight;
     public float power = 1;
     public bool isOn;
     private void Awake()
@@ -22,12 +22,12 @@ public class TorchHandler : MonoBehaviour
         if (isOn && power > 0)
         {
             power -= 0.05f * Time.deltaTime;
-            light.intensity = Mathf.Clamp01(power);
+            tLight.intensity = Mathf.Clamp01(power);
         }        
         if (Input.GetKeyDown(KeyCode.F))
         {
             isOn = !isOn;
-            light.enabled = isOn;
+            tLight.enabled = isOn;
         }
     }
 }
