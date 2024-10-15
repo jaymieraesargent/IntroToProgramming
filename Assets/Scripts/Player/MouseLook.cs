@@ -16,13 +16,13 @@ namespace Player
         //Create a link or reference to rotational axis call axis and set the defualt axis X
         [SerializeField] RotationalAxis axis = RotationalAxis.MouseX;
         //Sensitivity of moving the mouse around the screen (how fast the camera rotates)
-        public float sensitivity = 15;
+        public static float sensitivity = 15;
         //Minimum and Maximum values the head can look up and down
         [SerializeField] Vector2 rotationClamp = new Vector2(-60, 60);
         //Temp value to help us calculate the up and down rotation
         float yRotation;
         //Value to control the invert swap for up and down camera control
-        public bool invert = false;
+        public static bool invert = false;
         void Start()
         {            
 
