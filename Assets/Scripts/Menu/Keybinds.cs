@@ -55,40 +55,101 @@ public class Keybinds : MonoBehaviour
         /* 
         Summary of the above
             We loop through each action in actionMapData.
-            Convert each defaultKey string to a KeyCode.
-            Store the action and KeyCode in the keys dictionary.
+            Store the action and KeyCode (which we convert each defaultKey string to a KeyCode) in the keys dictionary.
             Update the UI to reflect the current keybinding for each action.
          */
     }
-
+    /// <summary>
+    /// Called when the user selects a keybinding to modify. This function is connected to a button that is also named the same name as an action.
+    /// </summary>
+    /// <param name="clickedKey"> This object is the button that the event is attached to, the button object must be named the same as the action you are tying to change</param>
     public void ChangeKey(GameObject clickedKey)
     {
+        // Sets currentSelectedKey to the UI element the user clicked on.
         currentSelectedKey = clickedKey;
+        /*
+            If currentSelectedKey is null, it means the player hasn’t clicked on any keybinding UI element, so no change is needed.
+            If currentSelectedKey is not null, it means a UI element has been clicked, indicating that the player wants to reassign a key for that specific action.
+            This check prevents errors that could occur if the code tries to modify or access properties of currentSelectedKey when it hasn’t been set. 
+            It’s a safety check to ensure the program only proceeds if there is actually a selected key to update.
+         */
+        // Check to see if the variable currentSelectedKey has been assigned a value or not, only run the code below if it has been assigned.
         if (currentSelectedKey != null)
         {
+            // Changes its color to selectedKey, visually showing it’s ready for reassignment.
             currentSelectedKey.GetComponent<Image>().color = selectedKey;
         }
     }
+    /*
+        OnGUI is called several times per frame in Unity, especially during events like clicks, key presses, or layout updates.
+        Unity processes different GUI events (e.g., mouse clicks, key presses) and can detect when these events occur.
+        OnGUI method because handles various events (such as mouse clicks, key presses, window resizing, and layout changes) multiple times per frame.
+     */
     private void OnGUI()
     {
-        string newKeyCode = "";
+        /*
+            The Event class in Unity captures details of the current event happening in OnGUI. 
+            By checking properties like Event.current, we can see if a key was pressed or if another event occurred and act accordingly.
+         */
+        //  Represents the current input event (e.g., key press).
         Event changeKeyEvent = Event.current;
-
+        /*
+             This conditional checks if a keybinding UI element is selected. 
+             If currentSelectedKey is null, it means no keybinding change is active, and we don’t need to process any inputs.
+         */
+        // Ensures there’s a key ready to be reassigned.
         if (currentSelectedKey != null)
         {
+            /*
+                changeKeyEvent.isKey: isKey is a property of Unity's Event class. 
+                It returns true if the current event (changeKeyEvent) is a keyboard event (i.e., if a key was pressed).
+                This check ensures that the code inside the if statement only runs if a key press is detected. 
+                Without this check, the code could mistakenly respond to events that aren't key presses.
+            */
+            // Checks if the input event is a key press.
             if (changeKeyEvent.isKey)
             {
+                /*
+                    This line checks if changeKeyEvent.keyCode (the new key the player pressed) is already assigned to any other action in the keys dictionary.
+                    keys.ContainsValue(changeKeyEvent.keyCode) returns true if any action in keys already has the new key.
+                    Adding ! (not) before it makes the expression true only if the key is not already in use.
+                */
+                // Ensures the new key isn’t already assigned (Already Used).
                 if (!keys.ContainsValue(changeKeyEvent.keyCode))
                 {
-                    newKeyCode = changeKeyEvent.keyCode.ToString();
+                    /* 
+                        This line assigns the new key to the selected action. 
+                        currentSelectedKey.name is the key in the dictionary, representing the name of the action (e.g., "Jump"), and changeKeyEvent.keyCode is the new KeyCode the player pressed.
+                        This allows the new key to replace the old one in the dictionary only if it’s unique, preventing conflicts with other actions.
+                    */
+                    // Updates the dictionary with the new KeyCode.
                     keys[currentSelectedKey.name] = changeKeyEvent.keyCode;
-                    currentSelectedKey.GetComponentInChildren<Text>().text = newKeyCode;
+                    /*
+                        This line updates the text component of the currentSelectedKey to display the new key. 
+                        ToString() converts the KeyCode to a readable format (e.g., KeyCode.Space to "Space").
+                        This visually informs the player of the updated keybinding on the UI, showing which key is now bound to the selected action.
+                     */
+                    // Changes the UI text to display the new key.
+                    currentSelectedKey.GetComponentInChildren<Text>().text = changeKeyEvent.keyCode.ToString();
+                    /*
+                        Changes the currentSelectedKey's UI element color to changedKey, visually confirming the change for the user.
+                        The color change acts as feedback for the player, indicating that the binding update was successful.                        
+                     */
+                    // Changes the color to indicate the keybinding has been successfully updated.
                     currentSelectedKey.GetComponent<Image>().color = changedKey;
+                    /*
+                        Setting currentSelectedKey to null after that ensures that no keybinding is currently selected, resetting the system for the next input.
+                        Setting currentSelectedKey to null also prevents unintended updates by clearing the selection.
+                     */
+                    //  Sets currentSelectedKey to null to finish the reassignment.
                     currentSelectedKey = null;
                 }
+                // Handle Cases When the Key Is Already in Use
                 else
                 {
+                    // Reverts the color of currentSelectedKey to Color.white to indicate that the new key wasn’t accepted.
                     currentSelectedKey.GetComponent<Image>().color = Color.white;
+                    // Clears the selection so the user can try again.
                     currentSelectedKey = null;
                 }
             }
