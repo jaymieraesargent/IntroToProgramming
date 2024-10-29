@@ -21,15 +21,15 @@ public class Keybinds : MonoBehaviour
 
     In summary, [Serializable] makes it easy to work with data in the Unity Editor by making fields visible in the Inspector and enables data storage, sharing, and transfer by allowing the struct to be converted into binary format.
   */
-    [Serializable]
-    // ActionMapData Struct: This structure holds information for each action that can have a keybinding:
+    [Serializable] // Allows the ActionMapData struct to be serialized and appear in the Inspector.
+    // public struct ActionMapData defines a data structure that holds information about each key action, including the action name, the UI element displaying the key, and the default key.
     public struct ActionMapData
     {
         public string actionName; // Name of the action(e.g., "Jump").
         public Text keycodeDisplay; // UI Text element showing the current keybinding.
         public string defaultKey; // The default key set for the action.
     }
-    [SerializeField] ActionMapData[] actionMapData; // Array of ActionMapData structs to store keybinding data for each action.
+    [SerializeField] ActionMapData[] actionMapData; // Array of ActionMapData elements to store keybinding data for each action.
     [SerializeField] GameObject currentSelectedKey; // Tracks the key currently being modified, allowing us to visually indicate the selected key in the UI.
     // By storing keybindings in a dictionary, we can easily look up the assigned key for any action during gameplay. This setup also makes it easy to update or change bindings later, as each action has a unique key in the dictionary.
     public static Dictionary<string, KeyCode> keys = new Dictionary<string, KeyCode>(); // Stores action names (e.g., "Jump") mapped to KeyCode values (e.g., KeyCode.Space), making it easy to access keybindings during gameplay.
@@ -79,12 +79,12 @@ public class Keybinds : MonoBehaviour
             // Changes its color to selectedKey, visually showing it’s ready for reassignment.
             currentSelectedKey.GetComponent<Image>().color = selectedKey;
         }
-    }
-    /*
-        OnGUI is called several times per frame in Unity, especially during events like clicks, key presses, or layout updates.
-        Unity processes different GUI events (e.g., mouse clicks, key presses) and can detect when these events occur.
-        OnGUI method because handles various events (such as mouse clicks, key presses, window resizing, and layout changes) multiple times per frame.
-     */
+    }    
+    /// <summary>
+    /// OnGUI is called several times per frame in Unity, especially during events like clicks, key presses, or layout updates.
+    /// Unity processes different GUI events(e.g., mouse clicks, key presses) and can detect when these events occur.
+    /// OnGUI method because handles various events(such as mouse clicks, key presses, window resizing, and layout changes) multiple times per frame.
+     /// </summary>
     private void OnGUI()
     {
         /*
