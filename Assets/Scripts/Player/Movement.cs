@@ -52,10 +52,10 @@ namespace Player
      */
     #endregion
 
-    
+
     public class Movement : MonoBehaviour
     {
-        
+
         #region Attributes for the inspector
         /*
             C# Attributes in Unity! - Intermediate Scripting Tutorial
@@ -107,41 +107,31 @@ namespace Player
             // This line ensures the script is enabled and will run its Update method.
             this.enabled = true;
         }
-       /// <summary>
-       /// Allows the Player to move using WASD or Arrow Keys if the player is grounded.
-       /// </summary>
+        /// <summary>
+        /// Allows the Player to move using WASD or Arrow Keys if the player is grounded.
+        /// </summary>
         public void MovePlayer()
-        {            
-                // This checks if the _characterController is not null (i.e., it exists).
-                if (_characterController != null)
+        {
+            // This checks if the _characterController is not null (i.e., it exists).
+            if (_characterController != null)
+            {
+                // This checks if the character is on the ground.
+                if (_characterController.isGrounded)
                 {
-                    // This checks if the character is on the ground.
-                    if (_characterController.isGrounded)
-                    {
-                        //Runs the Behavouir Container that allows us to change speed based on user input
-                        SpeedControl();
-                        // This sets _moveDirection based on player input from the Horizontal and Vertical axes.
-                        _moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-                        //move in the direction we are facing
-                        _moveDirection = transform.TransformDirection(_moveDirection);
-                        // This multiplies the direction by the current movement speed.
-                        _moveDirection *= _moveSpeed;
-                        // This checks if the player has pressed the Jump button.
-                        if (Input.GetButton("Jump"))
-                        {
-                            // This sets the y component of _moveDirection to the jump force, making the character jump.
-                            _moveDirection.y = _jump;
-                        }
-                    }
-                    // This applies gravity to the y component of _moveDirection over time.
-                    _moveDirection.y -= _gravity * Time.deltaTime;
-                    // This moves the character based on _moveDirection, multiplied by Time.deltaTime for smooth movement.
-                    _characterController.Move(_moveDirection * Time.deltaTime);
-                }    
+                    //Runs the Behavouir Container that allows us to change speed based on user input
+                    SpeedControl();
+                    Move();
+                }
+                // This applies gravity to the y component of _moveDirection over time.
+                _moveDirection.y -= _gravity * Time.deltaTime;
+                // This moves the character based on _moveDirection, multiplied by Time.deltaTime for smooth movement.
+                _characterController.Move(_moveDirection * Time.deltaTime);
+            }
         }
         private void Update()
-        {  if (GameManager.instance.currentGameState == GameState.Game)
-          
+        {
+            if (GameManager.instance.currentGameState == GameState.Game)
+
             {
                 MovePlayer();
             }
@@ -149,17 +139,69 @@ namespace Player
         #endregion
         void SpeedControl()
         {
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (Keybinds.keys.Count <= 0)
             {
-                _moveSpeed = _sprint;
-            }
-            else if (Input.GetKey(KeyCode.LeftControl))
-            {
-                _moveSpeed = _crouch;
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    _moveSpeed = _sprint;
+                }
+                else if (Input.GetKey(KeyCode.LeftControl))
+                {
+                    _moveSpeed = _crouch;
+                }
+                else
+                {
+                    _moveSpeed = _walk;
+                }
             }
             else
             {
-                _moveSpeed = _walk;
+                _moveSpeed = Input.GetKey(Keybinds.keys["Sprint"]) ? _sprint : Input.GetKey(Keybinds.keys["Crouch"])? _crouch : _walk;
+            }
+        }
+        private void Move()
+        {
+            //if we dont have any keys stored in the dictionary use this so the player can move
+            if (Keybinds.keys.Count <= 0)
+            {
+                // This sets _moveDirection based on player input from the Horizontal and Vertical axes.
+                _moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                //move in the direction we are facing
+                _moveDirection = transform.TransformDirection(_moveDirection);
+                // This multiplies the direction by the current movement speed.
+                _moveDirection *= _moveSpeed;
+                // This checks if the player has pressed the Jump button.
+                if (Input.GetButton("Jump"))
+                {
+                    // This sets the y component of _moveDirection to the jump force, making the character jump.
+                    _moveDirection.y = _jump;
+                }
+            }
+            //use the keys
+            else
+            {
+                //if (Input.GetKey(Keybinds.keys["Left"]))
+                //{
+                //    _moveDirection.x = -1;
+                //}
+                //else if (Input.GetKey(Keybinds.keys["Right"]))
+                //{
+                //    _moveDirection.x = 1;
+                //}
+                //else
+                //{
+                //    _moveDirection.x = 0;
+                //}
+                float x = Input.GetKey(Keybinds.keys["Left"]) ? -1 : Input.GetKey(Keybinds.keys["Right"]) ? 1 : 0;
+                float z = Input.GetKey(Keybinds.keys["Forward"]) ? 1 : Input.GetKey(Keybinds.keys["Backward"]) ? -1 : 0;
+                _moveDirection = new Vector3(x, 0, z);
+                _moveDirection = transform.TransformDirection(_moveDirection);
+                _moveDirection *= _moveSpeed;
+
+                if (Input.GetKey(Keybinds.keys["Jump"]))
+                {
+                    _moveDirection.y = _jump;
+                }
             }
         }
     }

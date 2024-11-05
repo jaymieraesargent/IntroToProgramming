@@ -47,7 +47,11 @@ public class Keybinds : MonoBehaviour
             // Add the Action and KeyCode to the keys Dictionary: This line adds the action name (like "Jump") and its corresponding KeyCode to the keys dictionary.
             // Convert defaultKey to a KeyCode Using Enum.Parse: Enum.Parse takes a string (like "Space") and converts it into the corresponding KeyCode (like KeyCode.Space), which Unity uses for detecting specific key inputs.
             // Enum.Parse enables us to store key names as text strings in defaultKey and convert them to KeyCode values programmatically, making the setup more flexible and readable.
-            keys.Add(actionMapData[i].actionName, (KeyCode)Enum.Parse(typeof(KeyCode), actionMapData[i].defaultKey));
+            if (!keys.ContainsKey(actionMapData[i].actionName))
+            {
+                keys.Add(actionMapData[i].actionName, (KeyCode)Enum.Parse(typeof(KeyCode), actionMapData[i].defaultKey));
+
+            }
             // Update the UI Text to Show the Assigned Key: This line sets the text property of the keycodeDisplay UI element to show the KeyCode assigned to the action.
             // Updating the keycodeDisplay ensures that the player sees the current keybinding in the UI. Using ToString() on the KeyCode displays it in a readable format (like "Space" or "W"), making it clear to the player which key is assigned to each action.
             actionMapData[i].keycodeDisplay.text = keys[actionMapData[i].actionName].ToString();
